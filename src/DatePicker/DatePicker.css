@@ -1,0 +1,11 @@
+.DatePickerContainer{
+    position: relative;
+}
+.DatePicker {
+    box-shadow: 10px 10px 40px rgba(0,0,0,0.2);
+    padding: 8px;
+    border-radius: 8px;
+    width: 320px;
+    position: absolute;
+    z-index: 1300;
+}
