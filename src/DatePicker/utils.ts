@@ -16,22 +16,31 @@ export interface ICalendarCell {
   text: string;
   value: Dayjs;
   isInCurrentMonth: boolean;
+  selectionDisabled: boolean;
 }
 
-const prepareCell = (date: Dayjs, dayNumber: number, isInCurrentMonth: boolean): ICalendarCell => {
+const prepareCell = (date: Dayjs, dayNumber: number, isInCurrentMonth: boolean, minAllowedDate?: Dayjs, maxAllowedDate?: Dayjs): ICalendarCell => {
+  let selectionDisabled = false;
+  if (minAllowedDate?.isValid() && date.isBefore(minAllowedDate)) {
+    selectionDisabled = true;
+  }
+  if (maxAllowedDate?.isValid() && date.isAfter(maxAllowedDate)) {
+    selectionDisabled = true;
+  }
   return {
     text: String(dayNumber),
     value: date.clone().set('date', dayNumber),
     isInCurrentMonth: isInCurrentMonth,
+    selectionDisabled,
   };
 };
 
-function getCalendarCells(date: Dayjs): ICalendarCell[] {
+function getCalendarCells(date: Dayjs, minAllowedDate?: Dayjs, maxAllowedDate?: Dayjs): ICalendarCell[] {
   const daysArray = new Array(date.daysInMonth()).fill(1);
   const calendarCells: ICalendarCell[] = [];
 
   daysArray.forEach((_, i) => {
-    calendarCells.push(prepareCell(date, i + 1, true));
+    calendarCells.push(prepareCell(date, i + 1, true, minAllowedDate, maxAllowedDate));
   });
 
   const startOfTheMonthDay = date.startOf('month').day();
@@ -49,8 +58,8 @@ function getCalendarCells(date: Dayjs): ICalendarCell[] {
   return calendarCells;
 }
 
-export function getCalendarRows(date: Dayjs): Array<ICalendarCell[]> {
-  const cells = getCalendarCells(date);
+export function getCalendarRows(date: Dayjs, minAllowedDate?: Dayjs, maxAllowedDate?: Dayjs): Array<ICalendarCell[]> {
+  const cells = getCalendarCells(date, minAllowedDate, maxAllowedDate);
   const rows: Array<ICalendarCell[]> = [];
 
   for (let i = 0; i < cells.length; i += 7) {

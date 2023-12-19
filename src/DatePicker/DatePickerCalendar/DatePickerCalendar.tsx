@@ -9,19 +9,17 @@ import './DatePickerCalendar.css';
 export interface IDatePickerCalendarProps {
   shownDate: Dayjs;
   selectedDate: Dayjs;
-
   onChange: (newDate: Dayjs) => void;
+  minAllowedDate?: Dayjs;
+  maxAllowedDate?: Dayjs;
 }
 
-export const DatePickerCalendar: React.FC<IDatePickerCalendarProps> = ({ shownDate, selectedDate, onChange }) => {
+export const DatePickerCalendar: React.FC<IDatePickerCalendarProps> = ({ shownDate, selectedDate, onChange, minAllowedDate, maxAllowedDate }) => {
   const handleSelectDate = (value: Dayjs) => {
     return () => onChange(value);
   };
 
-  const rows = useMemo(() => getCalendarRows(shownDate), [shownDate]);
-
-  console.log(rows);
-
+  const rows = useMemo(() => getCalendarRows(shownDate, minAllowedDate, maxAllowedDate), [shownDate, minAllowedDate, maxAllowedDate]);
   return (
     <>
       <div className={'DatePickerCalendar__header'}>
@@ -34,12 +32,12 @@ export const DatePickerCalendar: React.FC<IDatePickerCalendarProps> = ({ shownDa
 
       {rows.map((cells, rowIndex) => (
         <div key={rowIndex} className={'DatePickerCalendar__row'}>
-          {cells.map(({ text, value, isInCurrentMonth }, i) => (
+          {cells.map(({ text, value, isInCurrentMonth, selectionDisabled }, i) => (
             <div
               key={`${text} - ${i}`}
               className={clsx('DatePickerCalendar__cell', 'DatePickerCalendar__dayCell', {
                 DatePickerCalendar__dayCell_selected: value.toString() === selectedDate.toString(),
-                DatePickerCalendar__dayCell_disabled: !isInCurrentMonth,
+                DatePickerCalendar__dayCell_disabled: !isInCurrentMonth || selectionDisabled,
               })}
               onClick={handleSelectDate(value)}
             >

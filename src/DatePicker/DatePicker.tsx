@@ -8,21 +8,23 @@ import { DatePickerCalendar } from './DatePickerCalendar/DatePickerCalendar';
 import { DatePickerSelector } from './DatePickerSelector/DatePickerSelector';
 
 import './DatePicker.css';
+import dayjs from 'dayjs';
 
 export interface IDatePickerProps {
-  selectedDate: Dayjs;
+  selectedDate: Date;
+  onChange: (newDate: Date) => void;
   selectorDateFormat?: string;
-
-  onChange: (newDate: Dayjs) => void;
+  minAllowedDate?: Date;
+  maxAllowedDate?: Date;
 }
 
-export const DatePicker: React.FC<IDatePickerProps> = ({ selectedDate, selectorDateFormat, onChange }) => {
-  const [shownDate, setShownDate] = useState(selectedDate.clone());
+export const DatePicker: React.FC<IDatePickerProps> = ({ selectedDate, selectorDateFormat, onChange, minAllowedDate, maxAllowedDate }) => {
+  const [shownDate, setShownDate] = useState(dayjs(selectedDate));
   const [showPicker, setShowPicker] = useState(false);
   const newRef: React.Ref<any> = useRef();
   const onselectDate = (newDate: Dayjs) => {
     setShowPicker(false);
-    onChange(newDate);
+    onChange(newDate.toDate());
   };
   const handleOutsideClick = (e: Event) => {
     if (newRef.current && !newRef.current.contains(e.target)) {
@@ -51,7 +53,13 @@ export const DatePicker: React.FC<IDatePickerProps> = ({ selectedDate, selectorD
         <div className={'DatePicker'}>
           <DatePickerSelector shownDate={shownDate} setShownDate={setShownDate} />
 
-          <DatePickerCalendar selectedDate={selectedDate} shownDate={shownDate} onChange={onselectDate} />
+          <DatePickerCalendar
+            selectedDate={shownDate}
+            shownDate={shownDate}
+            onChange={onselectDate}
+            minAllowedDate={minAllowedDate && dayjs(minAllowedDate)}
+            maxAllowedDate={maxAllowedDate && dayjs(maxAllowedDate)}
+          />
         </div>
       )}
     </div>
