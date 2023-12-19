@@ -35,6 +35,7 @@ export const DatePickerCalendar: React.FC<IDatePickerCalendarProps> = ({ shownDa
           {cells.map(({ text, value, isInCurrentMonth, selectionDisabled }, i) => (
             <div
               key={`${text} - ${i}`}
+              data-testid={`day`}
               className={clsx('DatePickerCalendar__cell', 'DatePickerCalendar__dayCell', {
                 DatePickerCalendar__dayCell_selected: value.toString() === selectedDate.toString(),
                 DatePickerCalendar__dayCell_disabled: !isInCurrentMonth || selectionDisabled,

@@ -22,13 +22,13 @@ export const DatePickerSelector: React.FC<IDatePickerSelectorProps> = ({ shownDa
 
   return (
     <div className={'DatePickerSelector'}>
-      <div className={clsx('DatePickerSelector__icon', 'DatePickerSelector__iconLeft')} onClick={handleIconClick(false)}>
+      <div data-testid="icon-left" className={clsx('DatePickerSelector__icon', 'DatePickerSelector__iconLeft')} onClick={handleIconClick(false)}>
         <ChevronDownIcon />
       </div>
 
       <div className={'DatePickerSelector__date'}>{shownDate.format('MMMM YYYY')}</div>
 
-      <div className={clsx('DatePickerSelector__icon', 'DatePickerSelector__iconRight')} onClick={handleIconClick(true)}>
+      <div data-testid="icon-right" className={clsx('DatePickerSelector__icon', 'DatePickerSelector__iconRight')} onClick={handleIconClick(true)}>
         <ChevronDownIcon />
       </div>
     </div>

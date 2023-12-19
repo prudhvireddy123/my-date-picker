@@ -21,15 +21,17 @@ export interface ICalendarCell {
 
 const prepareCell = (date: Dayjs, dayNumber: number, isInCurrentMonth: boolean, minAllowedDate?: Dayjs, maxAllowedDate?: Dayjs): ICalendarCell => {
   let selectionDisabled = false;
-  if (minAllowedDate?.isValid() && date.isBefore(minAllowedDate)) {
+  debugger;
+  const currentDayValue = date.clone().set('date', dayNumber);
+  if (minAllowedDate?.isValid() && currentDayValue.isBefore(minAllowedDate)) {
     selectionDisabled = true;
   }
-  if (maxAllowedDate?.isValid() && date.isAfter(maxAllowedDate)) {
+  if (maxAllowedDate?.isValid() && currentDayValue.isAfter(maxAllowedDate)) {
     selectionDisabled = true;
   }
   return {
     text: String(dayNumber),
-    value: date.clone().set('date', dayNumber),
+    value: currentDayValue,
     isInCurrentMonth: isInCurrentMonth,
     selectionDisabled,
   };
@@ -46,13 +48,13 @@ function getCalendarCells(date: Dayjs, minAllowedDate?: Dayjs, maxAllowedDate?: 
   const startOfTheMonthDay = date.startOf('month').day();
   const lastMonth = date.subtract(1, 'month');
   for (let i = 0; i < startOfTheMonthDay; i++) {
-    calendarCells.unshift(prepareCell(lastMonth, lastMonth.daysInMonth() - i, false));
+    calendarCells.unshift(prepareCell(lastMonth, lastMonth.daysInMonth() - i, false, minAllowedDate, maxAllowedDate));
   }
 
   const cellsToAdd = 42 - calendarCells.length;
   const nextMonth = date.add(1, 'month');
   for (let i = 0; i < cellsToAdd; i++) {
-    calendarCells.push(prepareCell(nextMonth, i + 1, false));
+    calendarCells.push(prepareCell(nextMonth, i + 1, false, minAllowedDate, maxAllowedDate));
   }
 
   return calendarCells;

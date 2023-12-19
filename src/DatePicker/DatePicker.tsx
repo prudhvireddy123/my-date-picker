@@ -42,15 +42,16 @@ export const DatePicker: React.FC<IDatePickerProps> = ({ selectedDate, selectorD
   return (
     <div ref={newRef} className={'DatePickerContainer'}>
       <div
+        data-testid="input-container"
         onClick={(event) => {
           event.preventDefault();
           setShowPicker(true);
         }}
       >
-        <input type="date" value={shownDate.date().toString()} onKeyDown={(e) => e.preventDefault()}></input>
+        <input aria-label="date" type="date" value={shownDate.format('YYYY-MM-DD')} onKeyDown={(e) => e.preventDefault()}></input>
       </div>
       {showPicker && (
-        <div className={'DatePicker'}>
+        <div className={'DatePicker'} data-testid="picker-calender">
           <DatePickerSelector shownDate={shownDate} setShownDate={setShownDate} />
 
           <DatePickerCalendar

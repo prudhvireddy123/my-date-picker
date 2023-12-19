@@ -17,4 +17,34 @@ describe('Date Picker Utils', () => {
     expect(displayDates[5][6].text).toBe('6');
     expect(displayDates[5][6].isInCurrentMonth).toBe(false);
   });
+
+  test('getCalendarRows Should return the disabled calender Rows for given month with minAllowedDate', () => {
+    const showingDate = dayjs(new Date('2023-12-19'));
+    const minAllowedDate = dayjs(new Date('2023-12-19'));
+    const displayDates = utils.getCalendarRows(showingDate, minAllowedDate);
+    expect(displayDates.length).toBe(6);
+    displayDates.forEach((daysRow) => {
+      daysRow.forEach((day) => {
+        expect(day.selectionDisabled).toBe(day.value.isBefore(minAllowedDate));
+      });
+    });
+  });
+
+  test('getCalendarRows Should return the disabled calender Rows for given month with maxAllowedDate', () => {
+    const showingDate = dayjs(new Date('2023-12-19'));
+    const maxAllowedDate = dayjs(new Date('2023-12-30'));
+    const displayDates = utils.getCalendarRows(showingDate, undefined, maxAllowedDate);
+    expect(displayDates.length).toBe(6);
+    displayDates.forEach((daysRow) => {
+      daysRow.forEach((day) => {
+        expect(day.selectionDisabled).toBe(day.value.isAfter(maxAllowedDate));
+      });
+    });
+  });
+
+  test('changeDateMonth shouldCalculate the before and after month', () => {
+    const showingDate = dayjs(new Date('2023-12-19'));
+    expect(utils.changeDateMonth(showingDate, false).toString()).toBe('Sun, 19 Nov 2023 00:00:00 GMT');
+    expect(utils.changeDateMonth(showingDate, true).toString()).toBe('Fri, 19 Jan 2024 00:00:00 GMT');
+  });
 });
